@@ -4,19 +4,11 @@ import java.util.Random;
 
 public class Italy {
 
-    private static final String COUNTRY_NAME = "Italia";
     private static final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final Random RANDOM = new Random();
 
-    public static String generate(String country) {
-        if (!"IT".equalsIgnoreCase(country)) {
-            throw new IllegalArgumentException("No existe generador de CDI para el país: " + country);
-        }
+    public static String generate() {
         return generateCdi();
-    }
-
-    public static String getCountryName() {
-        return COUNTRY_NAME;
     }
 
     private static String generateCdi() {

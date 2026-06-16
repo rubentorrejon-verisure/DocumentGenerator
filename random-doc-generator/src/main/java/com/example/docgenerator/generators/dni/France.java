@@ -4,7 +4,6 @@ import java.util.Random;
 
 public class France {
 
-    private static final String COUNTRY_NAME = "Francia";
     private static final Random RANDOM = new Random();
 
     private static final String[] DEPARTMENTS = {
@@ -20,15 +19,8 @@ public class France {
         "92", "93", "94", "95", "971", "972", "973", "974", "976"
     };
 
-    public static String generate(String country) {
-        if (!"FR".equalsIgnoreCase(country)) {
-            throw new IllegalArgumentException("No existe generador de DNI para el país: " + country);
-        }
+    public static String generate() {
         return generateNIR();
-    }
-
-    public static String getCountryName() {
-        return COUNTRY_NAME;
     }
 
     private static String generateNIR() {

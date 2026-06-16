@@ -28,7 +28,3 @@ run.bat
 ## Extender
 
 Agregar nuevos generadores en `src/main/java/com/example/docgenerator/generators/` y nuevos países como subpaquetes es la forma recomendada para escalar.
-
-## Extender
-
-Agregar nuevos documentos en `src/main/java/com/example/docgenerator/generators/` y nuevos países como subpaquetes es la forma recomendada para escalar.

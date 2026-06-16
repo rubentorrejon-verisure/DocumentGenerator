@@ -2,82 +2,81 @@ import generators.dni.Spain;
 import generators.dni.France;
 import generators.dni.Italy;
 import generators.dni.Argentina;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class DocumentGenerator {
 
+    private static final Map<String, Supplier<String>> GENERATORS = Map.of(
+        key("ES", "dni"), Spain::generate,
+        key("AR", "dni"), Argentina::generate,
+        key("FR", "cni"), France::generate,
+        key("IT", "cdi"), Italy::generate,
+        key("ES", "iban"), generators.accounts.Spain::generateRandomIBAN,
+        key("AR", "cbu"), generators.accounts.Argentina::generateRandomCBU
+    );
+
+    private static final Map<String, String> COUNTRY_NAMES = Map.of(
+        "ES", "España",
+        "FR", "Francia",
+        "IT", "Italia",
+        "AR", "Argentina"
+    );
+
+    private static final Map<String, String[]> AVAILABLE_DOCUMENTS = Map.of(
+        "ES", new String[]{"DNI", "IBAN"},
+        "FR", new String[]{"CNI"},
+        "IT", new String[]{"CDI"},
+        "AR", new String[]{"DNI", "CBU"}
+    );
+
     public static String generateDocument(String country, String documentType) {
-        switch (documentType.toLowerCase()) {
-            case "dni":
-                switch (country.toUpperCase()) {
-                    case "ES":
-                        return Spain.generate(country);
-                    case "FR":
-                        return France.generate(country);
-                    case "AR":
-                        return Argentina.generate(country);
-                    default:
-                        throw new IllegalArgumentException("No existe generador de DNI para el país: " + country);
-                }
-            case "cni":
-                switch (country.toUpperCase()) {
-                    case "FR":
-                        return France.generate(country);
-                    default:
-                        throw new IllegalArgumentException("No existe generador de CNI para el país: " + country);
-                }
-            case "cdi":
-                switch (country.toUpperCase()) {
-                    case "IT":
-                        return Italy.generate(country);
-                    default:
-                        throw new IllegalArgumentException("No existe generador de CDI para el país: " + country);
-                }
-            case "iban":
-                switch (country.toUpperCase()) {
-                    case "ES":
-                        return generators.accounts.Spain.generateRandomIBAN();
-                    default:
-                        throw new IllegalArgumentException("No existe generador de IBAN para el país: " + country);
-                }
-            case "cbu":
-                switch (country.toUpperCase()) {
-                    case "AR":
-                        return generators.accounts.Argentina.generateRandomCBU();
-                    default:
-                        throw new IllegalArgumentException("No existe generador de CBU para el país: " + country);
-                }
-            default:
-                throw new IllegalArgumentException("Tipo de documento no soportado: " + documentType);
+        String normalizedCountry = country.toUpperCase(Locale.ROOT);
+        String normalizedDocumentType = documentType.toLowerCase(Locale.ROOT);
+
+        Supplier<String> generator = GENERATORS.get(key(normalizedCountry, normalizedDocumentType));
+        if (generator != null) {
+            return generator.get();
         }
+
+        throw buildGenerationError(country, documentType, normalizedDocumentType);
     }
 
     public static String getCountryName(String country) {
-        switch (country.toUpperCase()) {
-            case "ES":
-                return Spain.getCountryName();
-            case "FR":
-                return France.getCountryName();
-            case "IT":
-                return Italy.getCountryName();
-            case "AR":
-                return Argentina.getCountryName();
-            default:
-                throw new IllegalArgumentException("País no soportado: " + country);
+        String countryName = COUNTRY_NAMES.get(country.toUpperCase(Locale.ROOT));
+        if (countryName == null) {
+            throw new IllegalArgumentException("País no soportado: " + country);
         }
+        return countryName;
     }
 
     public static String[] getAvailableDocuments(String country) {
-        switch (country.toUpperCase()) {
-            case "ES":
-                return new String[]{"DNI", "IBAN"};
-            case "FR":
-                return new String[]{"CNI"};
-            case "IT":
-                return new String[]{"CDI"};
-            case "AR":
-                return new String[]{"DNI", "CBU"};
-            default:
-                return new String[]{"DNI"};
+        String[] documents = AVAILABLE_DOCUMENTS.get(country.toUpperCase(Locale.ROOT));
+        if (documents == null) {
+            return new String[]{"DNI"};
         }
+        return documents.clone();
+    }
+
+    private static IllegalArgumentException buildGenerationError(String country, String documentType, String normalizedDocumentType) {
+        switch (normalizedDocumentType) {
+            case "dni":
+                return new IllegalArgumentException("No existe generador de DNI para el país: " + country);
+            case "cni":
+                return new IllegalArgumentException("No existe generador de CNI para el país: " + country);
+            case "cdi":
+                return new IllegalArgumentException("No existe generador de CDI para el país: " + country);
+            case "iban":
+                return new IllegalArgumentException("No existe generador de IBAN para el país: " + country);
+            case "cbu":
+                return new IllegalArgumentException("No existe generador de CBU para el país: " + country);
+            default:
+                return new IllegalArgumentException("Tipo de documento no soportado: " + documentType);
+        }
+    }
+
+    private static String key(String country, String documentType) {
+        return country + ":" + documentType;
     }
 }

@@ -13,8 +13,6 @@ import java.awt.Toolkit;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.datatransfer.StringSelection;
@@ -53,7 +51,7 @@ public class DocumentWindow extends JFrame {
         inputPanel.add(documentCombo);
 
         JButton generateButton = new JButton("Generar documento");
-        generateButton.addActionListener(new GenerateAction());
+        generateButton.addActionListener(e -> generateDocument());
         inputPanel.add(generateButton);
 
         add(inputPanel, BorderLayout.CENTER);
@@ -96,7 +94,7 @@ public class DocumentWindow extends JFrame {
             return;
         }
 
-        String document = DocumentGenerator.generateDocument(countryCode, documentType.toLowerCase());
+        String document = DocumentGenerator.generateDocument(countryCode, documentType);
         lastGeneratedValue = document;
         String countryName = DocumentGenerator.getCountryName(countryCode);
         outputArea.setText(documentType + " para " + countryName + " generado: " + document);
@@ -145,13 +143,6 @@ public class DocumentWindow extends JFrame {
         @Override
         public String toString() {
             return name;
-        }
-    }
-
-    private class GenerateAction implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            generateDocument();
         }
     }
 }
