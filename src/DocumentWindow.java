@@ -8,17 +8,23 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.JOptionPane;
+import java.awt.Toolkit;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.datatransfer.StringSelection;
 
 public class DocumentWindow extends JFrame {
 
     private final JComboBox<CountryItem> countryCombo;
     private final JComboBox<String> documentCombo;
     private final JTextArea outputArea;
+    private String lastGeneratedValue;
 
     public DocumentWindow(String title) {
         super(title);
@@ -57,6 +63,8 @@ public class DocumentWindow extends JFrame {
         outputArea.setEditable(false);
         outputArea.setLineWrap(true);
         outputArea.setWrapStyleWord(true);
+        outputArea.setToolTipText("Haz clic para copiar el documento generado");
+        configureOutputCopyBehavior();
         add(new JScrollPane(outputArea), BorderLayout.SOUTH);
 
         setSize(560, 280);
@@ -89,8 +97,33 @@ public class DocumentWindow extends JFrame {
         }
 
         String document = DocumentGenerator.generateDocument(countryCode, documentType.toLowerCase());
+        lastGeneratedValue = document;
         String countryName = DocumentGenerator.getCountryName(countryCode);
         outputArea.setText(documentType + " para " + countryName + " generado: " + document);
+    }
+
+    private void configureOutputCopyBehavior() {
+        outputArea.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String valueToCopy = lastGeneratedValue;
+                if (valueToCopy == null || valueToCopy.isBlank()) {
+                    valueToCopy = outputArea.getText();
+                }
+                if (valueToCopy == null || valueToCopy.isBlank()) {
+                    return;
+                }
+
+                StringSelection selection = new StringSelection(valueToCopy);
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
+                JOptionPane.showMessageDialog(
+                    DocumentWindow.this,
+                    "Documento copiado en el portapapeles",
+                    "Copiado",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        });
     }
 
     public static void display() {
