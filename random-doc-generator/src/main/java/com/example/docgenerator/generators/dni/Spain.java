@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class Spain {
 
+    private static final String COUNTRY_NAME = "España";
     private static final String LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
     private static final Random RANDOM = new Random();
 
@@ -14,6 +15,10 @@ public class Spain {
         String number = generateDigits(8);
         char letter = LETTERS.charAt(Integer.parseInt(number) % LETTERS.length());
         return number + letter;
+    }
+
+    public static String getCountryName() {
+        return COUNTRY_NAME;
     }
 
     private static String generateDigits(int length) {

@@ -1,12 +1,12 @@
 package generators.dni;
 
 import java.util.Random;
-import java.time.LocalDate;
 
 public class France {
 
+    private static final String COUNTRY_NAME = "Francia";
     private static final Random RANDOM = new Random();
-    // Códigos de departamento de Francia (simplificado)
+
     private static final String[] DEPARTMENTS = {
         "01", "02", "03", "04", "05", "06", "07", "08", "09", "10",
         "11", "12", "13", "14", "15", "16", "17", "18", "19", "21",
@@ -27,13 +27,10 @@ public class France {
         return generateNIR();
     }
 
-    /**
-     * Genera un Numéro de Sécurité Sociale (NIR) válido de Francia.
-     * Formato: 1 dígito (sexo) + 2 dígitos (año) + 2 dígitos (mes) + 
-     *          2 dígitos (departamento) + 3 dígitos (municipio) + 
-     *          3 dígitos (orden) + 2 dígitos (control)
-     */
-    
+    public static String getCountryName() {
+        return COUNTRY_NAME;
+    }
+
     private static String generateNIR() {
         StringBuilder nir = new StringBuilder();
         
@@ -73,10 +70,6 @@ public class France {
         return nir.toString();
     }
 
-    /**
-     * Calcula los dígitos de control del NIR.
-     * El control es 97 - (número de 13 dígitos % 97)
-     */
     private static int calculateControlDigits(String nirBase) {
         long nirNumber = Long.parseLong(nirBase);
         int control = (int) (97 - (nirNumber % 97));

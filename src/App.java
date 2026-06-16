@@ -1,7 +1,11 @@
 public class App {
     public static void main(String[] args) {
-        String pais = "ES";
-        String dni = DocumentGenerator.generateDocument(pais, "dni");
-        System.out.println("Documento para " + pais + " generado: " + dni);
+
+        String pais = "FR";
+        String documentType = "dni";
+        
+        String document = DocumentGenerator.generateDocument(pais, documentType);
+        String countryName = DocumentGenerator.getCountryName(pais);
+        System.out.println("Documento para " + countryName + " generado: " + document);
     }
 }
