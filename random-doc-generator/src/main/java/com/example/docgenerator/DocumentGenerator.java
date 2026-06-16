@@ -1,5 +1,6 @@
 import generators.dni.Spain;
 import generators.dni.France;
+import generators.dni.Italy;
 
 public class DocumentGenerator {
 
@@ -21,6 +22,13 @@ public class DocumentGenerator {
                     default:
                         throw new IllegalArgumentException("No existe generador de CNI para el país: " + country);
                 }
+            case "cdi":
+                switch (country.toUpperCase()) {
+                    case "IT":
+                        return Italy.generate(country);
+                    default:
+                        throw new IllegalArgumentException("No existe generador de CDI para el país: " + country);
+                }
             case "iban":
                 switch (country.toUpperCase()) {
                     case "ES":
@@ -39,6 +47,8 @@ public class DocumentGenerator {
                 return Spain.getCountryName();
             case "FR":
                 return France.getCountryName();
+            case "IT":
+                return Italy.getCountryName();
             default:
                 throw new IllegalArgumentException("País no soportado: " + country);
         }
@@ -50,6 +60,8 @@ public class DocumentGenerator {
                 return new String[]{"DNI", "IBAN"};
             case "FR":
                 return new String[]{"CNI"};
+            case "IT":
+                return new String[]{"CDI"};
             default:
                 return new String[]{"DNI"};
         }

@@ -34,7 +34,8 @@ public class DocumentWindow extends JFrame {
 
         countryCombo = new JComboBox<>(new CountryItem[] {
             new CountryItem("ES", "Spain"),
-            new CountryItem("FR", "France")
+            new CountryItem("FR", "France"),
+            new CountryItem("IT", "Italy")
         });
         countryCombo.addActionListener(e -> updateDocuments());
         inputPanel.add(countryCombo);
