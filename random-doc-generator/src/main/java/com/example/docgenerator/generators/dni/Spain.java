@@ -2,7 +2,7 @@ package generators.dni;
 
 import java.util.Random;
 
-public class DniGenerator {
+public class Spain {
 
     private static final String LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
     private static final Random RANDOM = new Random();
