@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 public class DocumentWindow extends JFrame {
 
     private final JComboBox<CountryItem> countryCombo;
+    private final JComboBox<String> documentCombo;
     private final JTextArea outputArea;
 
     public DocumentWindow(String title) {
@@ -35,7 +36,13 @@ public class DocumentWindow extends JFrame {
             new CountryItem("ES", "Spain"),
             new CountryItem("FR", "France")
         });
+        countryCombo.addActionListener(e -> updateDocuments());
         inputPanel.add(countryCombo);
+
+        inputPanel.add(new JLabel("Selecciona documento:"));
+        documentCombo = new JComboBox<>();
+        updateDocuments();
+        inputPanel.add(documentCombo);
 
         JButton generateButton = new JButton("Generar documento");
         generateButton.addActionListener(new GenerateAction());
@@ -50,8 +57,21 @@ public class DocumentWindow extends JFrame {
         outputArea.setWrapStyleWord(true);
         add(new JScrollPane(outputArea), BorderLayout.SOUTH);
 
-        setSize(560, 240);
+        setSize(560, 280);
         setLocationRelativeTo(null);
+    }
+
+    private void updateDocuments() {
+        CountryItem selected = (CountryItem) countryCombo.getSelectedItem();
+        if (selected == null) {
+            return;
+        }
+
+        String[] documents = DocumentGenerator.getAvailableDocuments(selected.code);
+        documentCombo.removeAllItems();
+        for (String doc : documents) {
+            documentCombo.addItem(doc);
+        }
     }
 
     private void generateDocument() {
@@ -61,9 +81,14 @@ public class DocumentWindow extends JFrame {
         }
 
         String countryCode = selected.code;
-        String document = DocumentGenerator.generateDocument(countryCode, "dni");
+        String documentType = (String) documentCombo.getSelectedItem();
+        if (documentType == null) {
+            return;
+        }
+
+        String document = DocumentGenerator.generateDocument(countryCode, documentType.toLowerCase());
         String countryName = DocumentGenerator.getCountryName(countryCode);
-        outputArea.setText("Documento para " + countryName + " generado: " + document);
+        outputArea.setText(documentType + " para " + countryName + " generado: " + document);
     }
 
     public static void display() {

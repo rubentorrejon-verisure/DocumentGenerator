@@ -14,6 +14,20 @@ public class DocumentGenerator {
                     default:
                         throw new IllegalArgumentException("No existe generador de DNI para el país: " + country);
                 }
+            case "cni":
+                switch (country.toUpperCase()) {
+                    case "FR":
+                        return France.generate(country);
+                    default:
+                        throw new IllegalArgumentException("No existe generador de CNI para el país: " + country);
+                }
+            case "iban":
+                switch (country.toUpperCase()) {
+                    case "ES":
+                        return generators.accounts.Spain.generateRandomIBAN();
+                    default:
+                        throw new IllegalArgumentException("No existe generador de IBAN para el país: " + country);
+                }
             default:
                 throw new IllegalArgumentException("Tipo de documento no soportado: " + documentType);
         }
@@ -27,6 +41,17 @@ public class DocumentGenerator {
                 return France.getCountryName();
             default:
                 throw new IllegalArgumentException("País no soportado: " + country);
+        }
+    }
+
+    public static String[] getAvailableDocuments(String country) {
+        switch (country.toUpperCase()) {
+            case "ES":
+                return new String[]{"DNI", "IBAN"};
+            case "FR":
+                return new String[]{"CNI"};
+            default:
+                return new String[]{"DNI"};
         }
     }
 }
